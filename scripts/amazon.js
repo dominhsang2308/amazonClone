@@ -1,6 +1,8 @@
+import { products } from "../data/products.js"
+import { cart } from "../data/cart.js"
 
 let productHTML = ''
-cart = []
+
 products.forEach((product) => {
     productHTML += `
         <div class="product-container">
@@ -26,7 +28,7 @@ products.forEach((product) => {
           </div>
 
           <div class="product-quantity-container">
-            <select class = "product-quantity">
+            <select class = "product-quantity js-cart-quantity-${product.id}">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -42,7 +44,7 @@ products.forEach((product) => {
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-add-to-cart-msg-${product.id}">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -55,11 +57,23 @@ products.forEach((product) => {
     `
 })
 
+//Show the html to website
 document.querySelector('.js-products-grid').innerHTML = productHTML
-
+//------------------------------------------------------------------//
+//Logic
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
+    
     const productId = button.dataset.productId
+    const quantityProduct = document.querySelector(`.js-cart-quantity-${productId}`).value
+    const numberQuantityProduct = Number(quantityProduct)
+    const add_to_cart = document.querySelector(`.js-add-to-cart-msg-${productId}`)
+    add_to_cart.classList.add('added-to-cart')
+    add_to_cart.style.opacity = 1
+    setTimeout(() => {
+      add_to_cart.style.opacity = 0
+    },2000)
+
     let matchingItem 
 
     cart.forEach((item) => {
@@ -69,7 +83,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
     })
 
     if(matchingItem){
-      matchingItem.quantity += 1
+      matchingItem.quantity = matchingItem.quantity + numberQuantityProduct
     }
     else{
       cart.push({
