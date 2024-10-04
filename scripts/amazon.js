@@ -61,12 +61,39 @@ products.forEach((product) => {
 document.querySelector('.js-products-grid').innerHTML = productHTML
 //------------------------------------------------------------------//
 //Logic
+
+function addToCart(productId){
+  const quantityProduct = document.querySelector(`.js-cart-quantity-${productId}`).value
+  const numberQuantityProduct = Number(quantityProduct)
+  let matchingItem 
+
+  cart.forEach((item) => {
+    if(productId === item.productId){
+      matchingItem = item
+    }
+  })
+
+  if(matchingItem){
+    matchingItem.quantity = matchingItem.quantity + numberQuantityProduct
+  }
+  else{
+    cart.push({
+      productId : productId,
+      quantity : 1
+    })
+  }
+  let cartTotal = 0
+    cart.forEach((item => {
+      cartTotal += item.quantity
+    }))
+  document.querySelector('.js-cart-quantity').innerHTML = cartTotal
+}
+
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     
     const productId = button.dataset.productId
-    const quantityProduct = document.querySelector(`.js-cart-quantity-${productId}`).value
-    const numberQuantityProduct = Number(quantityProduct)
+   
     const add_to_cart = document.querySelector(`.js-add-to-cart-msg-${productId}`)
     add_to_cart.classList.add('added-to-cart')
     add_to_cart.style.opacity = 1
@@ -74,30 +101,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
       add_to_cart.style.opacity = 0
     },2000)
 
-    let matchingItem 
-
-    cart.forEach((item) => {
-      if(productId === item.productId){
-        matchingItem = item
-      }
-    })
-
-    if(matchingItem){
-      matchingItem.quantity = matchingItem.quantity + numberQuantityProduct
-    }
-    else{
-      cart.push({
-        productId : productId,
-        quantity : 1
-      })
-    }
-    
-    let cartTotal = 0
-    cart.forEach((item => {
-      cartTotal += item.quantity
-    }))
-    document.querySelector('.js-cart-quantity').innerHTML = cartTotal
-    console.log(cartTotal)
+    addToCart(productId)
     console.log(cart)
   })
 })
